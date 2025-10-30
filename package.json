@@ -1,0 +1,29 @@
+{
+  "name": "train-accident-monitoring-system",
+  "version": "1.0.0",
+  "description": "Full-stack Train Accident Monitoring System using React, Node.js, Express, and MySQL",
+  "main": "server/server.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "nodemon server/server.js",
+    "client": "npm start --prefix client",
+    "start": "node server/server.js",
+    "setup-db": "node server/scripts/setupDB.js",
+    "test-db": "node server/scripts/testDB.js",
+    "check-mysql": "node server/scripts/checkMySQL.js",
+    "verify-data": "node server/scripts/verifyData.js"
+  },
+  "dependencies": {
+    "concurrently": "^7.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mysql2": "^3.15.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
