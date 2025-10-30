@@ -109,6 +109,23 @@ const deleteTrain = async (req, res) => {
     const { id } = req.params;
     console.log('Deleting train with ID:', id);
     
+    // First, delete all alerts associated with accidents of this train
+    console.log('Deleting alerts associated with accidents of train ID:', id);
+    await db.execute(`
+      DELETE al FROM Alert al
+      INNER JOIN Accident a ON al.Accident_ID = a.Accident_ID
+      WHERE a.Train_ID = ?
+    `, [id]);
+    
+    // Then, delete all accidents associated with this train
+    console.log('Deleting accidents associated with train ID:', id);
+    await db.execute('DELETE FROM Accident WHERE Train_ID = ?', [id]);
+    
+    // Then, delete all sensors associated with this train
+    console.log('Deleting sensors associated with train ID:', id);
+    await db.execute('DELETE FROM Sensor WHERE Train_ID = ?', [id]);
+    
+    // Finally, delete the train itself
     const [result] = await db.execute('DELETE FROM Train WHERE Train_ID = ?', [id]);
     
     if (result.affectedRows === 0) {
@@ -116,9 +133,9 @@ const deleteTrain = async (req, res) => {
       return res.status(404).json({ message: 'Train not found' });
     }
     
-    console.log('Train deleted successfully, affected rows:', result.affectedRows);
+    console.log('Train and all associated data deleted successfully, affected rows:', result.affectedRows);
     
-    res.status(200).json({ message: 'Train deleted successfully' });
+    res.status(200).json({ message: 'Train and all associated data deleted successfully' });
   } catch (error) {
     console.error('Error deleting train:', error.message);
     res.status(500).json({ error: error.message });
